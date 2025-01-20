@@ -2,26 +2,31 @@ package com.qa.tests;
 
 import com.qa.BaseTest;
 import com.qa.pages.LoginPage;
+import com.qa.pages.ProductsDetailsPage;
 import com.qa.pages.ProductsPage;
+import com.qa.pages.SettingsMenuPage;
 import org.json.JSONObject;
 import org.json.JSONTokener;
 import org.testng.Assert;
 import org.testng.annotations.*;
+import org.testng.asserts.SoftAssert;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Method;
 
-public class LoginTests extends BaseTest {
+public class ProductTests extends BaseTest {
 
     LoginPage loginPage;
     ProductsPage productsPage;
+    SettingsMenuPage settingsMenuPage;
+    ProductsDetailsPage productsDetailsPage;
     InputStream dataIS;
     JSONObject loginUsers;
 
     @BeforeClass
     public void beforeClass() throws IOException {
-        try{
+        try {
             String dataFileName = "data/loginUser.json";
             dataIS = getClass().getClassLoader().getResourceAsStream(dataFileName);
             JSONTokener tokener = new JSONTokener(dataIS);
@@ -30,91 +35,79 @@ public class LoginTests extends BaseTest {
             e.printStackTrace();
             throw e;
         } finally {
-            if(dataIS != null){
+            if (dataIS != null) {
                 dataIS.close();
             }
         }
-
+        try {
+            closeApp();
+            openApp();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @AfterClass
-    public void afterClass(){
+    public void afterClass() {
 
     }
 
     @BeforeMethod
-    public void beforeMethod(Method method){
+    public void beforeMethod(Method method) {
         loginPage = new LoginPage();
-        System.out.println("\n" + " ********** Starting Test: "+ method.getName() + " ************* " + "\n");
+        System.out.println("\n" + " ********** Starting Test: " + method.getName() + " ************* " + "\n");
+
+        productsPage = loginPage.login(loginUsers.getJSONObject("validUser").getString("username"),
+                loginUsers.getJSONObject("validUser").getString("password"));
 
     }
 
     @AfterMethod
-    public void afterMethod(){
+    public void afterMethod() {
 
+        settingsMenuPage = productsPage.pressMenuButton();
+        loginPage = settingsMenuPage.pressLogoutButton();
+        try {
+            closeApp();
+            openApp();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
 
     @Test
-    public void invalidUserName() {
-//        try{                  // By using Try Catch Block
-//            loginPage.enterUserName("invalidusername");
-//            loginPage.enterPassword("secret_sauce");
-//            loginPage.pressLoginButton();
-//
-//            String actualErrorText = loginPage.getErrorText();
-//            System.out.println("Actual Error: "+ actualErrorText);
-//            String expectedErrorText = "Username and password do not match any user in this service.";
-//            System.out.println("Expected Error: "+ expectedErrorText);
-//
-//            Assert.assertEquals(actualErrorText, expectedErrorText);
-//
-//        } catch (Exception e) {
-//            StringWriter stringWriter = new StringWriter();
-//            PrintWriter printWriter = new PrintWriter(stringWriter);
-//            e.printStackTrace(printWriter);
-//            System.out.println(stringWriter.toString());
-//            Assert.fail(stringWriter.toString());
-//        }
-//          //  By using Try Catch Block //
-            loginPage.enterUserName(loginUsers.getJSONObject("invalidUsername").getString("username"));
-            loginPage.enterPassword(loginUsers.getJSONObject("invalidUsername").getString("password"));
-            loginPage.pressLoginButton();
+    public void validateProductOnProductsPage() throws InterruptedException {
+        SoftAssert softAssert = new SoftAssert();
 
-            String actualErrorText = loginPage.getErrorText();
-            System.out.println("Actual Error: "+ actualErrorText);
-            String expectedErrorText = stringsHM.get("err_invalid_username_or_password");
-            System.out.println("Expected Error: "+ expectedErrorText);
+        String sLBagTitle = productsPage.getProductTitle();
+        softAssert.assertEquals(sLBagTitle, stringsHM.get("products_page_slb_title"));
 
-            Assert.assertEquals(actualErrorText, expectedErrorText);
+        String sLBagPrice = productsPage.getProductPrice();
+        softAssert.assertEquals(sLBagPrice, stringsHM.get("products_page_slb_price"));
+
+        softAssert.assertAll();
     }
 
     @Test
-    public void invalidPassword() {
-        loginPage.enterUserName(loginUsers.getJSONObject("invalidPassword").getString("username"));
-        loginPage.enterPassword(loginUsers.getJSONObject("invalidPassword").getString("password"));
-        loginPage.pressLoginButton();
+    public void validateProductOnProductsDetailsPage() {
+        SoftAssert softAssert = new SoftAssert();
 
-        String actualErrorText = loginPage.getErrorText();
-        System.out.println("Actual Error: "+ actualErrorText);
-//        String expectedErrorText = "Username and password do not match any user in this service.";
-        String expectedErrorText = stringsHM.get("err_invalid_username_or_password");
-        System.out.println("Expected Error: "+ expectedErrorText);
+        productsDetailsPage = productsPage.pressProductTitleLink();
 
-        Assert.assertEquals(actualErrorText, expectedErrorText);
-    }
+        String sLBagTitle = productsDetailsPage.getProductTitleText();
+        softAssert.assertEquals(sLBagTitle, stringsHM.get("product_details_page_slb_title"));
 
-    @Test
-    public void successfulLogin() {
+        String sLBagDescribtion = productsDetailsPage.getProductDetailsText();
+        softAssert.assertEquals(sLBagDescribtion, stringsHM.get("product_details_page_slb_txt"));
 
-        loginPage.enterUserName(loginUsers.getJSONObject("validUser").getString("username"));
-        loginPage.enterPassword(loginUsers.getJSONObject("validUser").getString("password"));
-        productsPage = loginPage.pressLoginButton();
+        String sLBagPrice = productsDetailsPage.scrollToPriceAndValidate();
+        softAssert.assertEquals(sLBagPrice, stringsHM.get("product_details_page_slb_price"));
 
-        String actualHeaderText = productsPage.getProductHeaderTitle();
-        String expectedHeaderText = stringsHM.get("product_title");
-        System.out.println("Expected Product Title: "+ expectedHeaderText + "\n" + "Actual Product Title: " + actualHeaderText);
-        Assert.assertEquals(actualHeaderText, expectedHeaderText);
+        productsPage = productsDetailsPage.pressBackToProductsButton();
+
+        softAssert.assertAll();
+
     }
 
 

@@ -1,8 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <suite name="Suite" parallel="false">
+    <listners>
+        <listner class-name="com.qa.listeners.TestListener"/>
+    </listners>
     <test name="Test">
+        <parameter name="emulator" value="false"/>
+        <parameter name="platformName" value="Android"/>
+        <parameter name="platformVersion" value="15.0"/>
+        <parameter name="udid" value="b26d9ca1"/>            <!--only for real device-->
+        <parameter name="unlockType" value="pin"/>            <!--only for real device-->
+        <parameter name="unlockKey" value="084265"/>            <!--only for real device-->
+        <parameter name="deviceName" value="Pixel_8_API_35"/>
         <classes>
-            <class name="qa.mobile.test1"/>
+            <class name="com.qa.tests.LoginTests">
+                <methods>
+                    <include name="invalidUserName"/>
+                </methods>
+            </class>
+            <!--            <class name="com.qa.tests.ProductTests">-->
+            <!--                <methods>-->
+            <!--                    <include name="validateProductOnProductsDetailsPage"/>-->
+            <!--                </methods>-->
+            <!--            </class>-->
         </classes>
     </test>
 </suite> <!-- Suite -->
