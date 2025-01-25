@@ -1,27 +1,55 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<suite name="Suite" parallel="false">
-    <listners>
-        <listner class-name="com.qa.listeners.TestListener"/>
-    </listners>
-    <test name="Test">
-        <parameter name="emulator" value="false"/>
+<suite name="Suite" parallel="false">       <!--make parallel as tests, for test classes to work in parallel-->
+    <test name="Pixel_8">
+        <listners>
+            <listner class-name="com.qa.listeners.TestListener"/>
+        </listners>
+        <parameter name="emulator" value="true"/>
         <parameter name="platformName" value="Android"/>
-        <parameter name="platformVersion" value="15.0"/>
-        <parameter name="udid" value="b26d9ca1"/>            <!--only for real device-->
-        <parameter name="unlockType" value="pin"/>            <!--only for real device-->
-        <parameter name="unlockKey" value="084265"/>            <!--only for real device-->
+        <parameter name="udid" value="emulator-5554"/>
         <parameter name="deviceName" value="Pixel_8_API_35"/>
+        <parameter name="systemPort" value="10000"/>
+        <parameter name="chromeDriverPort" value="11000"/>
         <classes>
             <class name="com.qa.tests.LoginTests">
-                <methods>
-                    <include name="invalidUserName"/>
-                </methods>
             </class>
-            <!--            <class name="com.qa.tests.ProductTests">-->
-            <!--                <methods>-->
-            <!--                    <include name="validateProductOnProductsDetailsPage"/>-->
-            <!--                </methods>-->
-            <!--            </class>-->
         </classes>
     </test>
+
+<!--    <test name="Pixel_6a">-->
+<!--        <listners>-->
+<!--            <listner class-name="com.qa.listeners.TestListener"/>-->
+<!--        </listners>-->
+<!--        <parameter name="emulator" value="true"/>-->
+<!--        <parameter name="platformName" value="Android"/>-->
+<!--        <parameter name="udid" value="emulator-5556"/>            &lt;!&ndash;only for real device&ndash;&gt;-->
+<!--&lt;!&ndash;        <parameter name="unlockType" value="pin"/>            &lt;!&ndash;only for real device&ndash;&gt;&ndash;&gt;-->
+<!--&lt;!&ndash;        <parameter name="unlockKey" value="084265"/>            &lt;!&ndash;only for real device&ndash;&gt;&ndash;&gt;-->
+<!--        <parameter name="deviceName" value="Medium_Phone_API_35"/>-->
+<!--        <parameter name="systemPort" value="10001"/>-->
+<!--        <parameter name="chromeDriverPort" value="11001"/>-->
+<!--        <classes>-->
+<!--            <class name="com.qa.tests.LoginTests">-->
+<!--            </class>-->
+<!--        </classes>-->
+<!--    </test>-->
+
+    <!--    <test name="iOS">-->
+    <!--        <listners>-->
+    <!--            <listner class-name="com.qa.listeners.TestListener"/>-->
+    <!--        </listners>-->
+    <!--        <parameter name="platformName" value="iOS"/>-->
+    <!--        <parameter name="platformVersion" value="15.0"/>-->
+    <!--        <parameter name="udid" value="b26d9ca1"/>            &lt;!&ndash;only for real device&ndash;&gt;-->
+    <!--        <parameter name="unlockType" value="pin"/>            &lt;!&ndash;only for real device&ndash;&gt;-->
+    <!--        <parameter name="unlockKey" value="084265"/>            &lt;!&ndash;only for real device&ndash;&gt;-->
+    <!--        <parameter name="deviceName" value="Pixel_8_API_35"/>-->
+    <!--        <parameter name="wdaLocalPort" value="10001"/>            &lt;!&ndash;only for real device&ndash;&gt;-->
+    <!--        <parameter name="webkitDebugProxyPort" value="11001"/>            &lt;!&ndash;only for real device&ndash;&gt;-->
+    <!--        <classes>-->
+    <!--            <class name="com.qa.tests.LoginTests">-->
+    <!--            </class>-->
+    <!--        </classes>-->
+    <!--    </test>-->
+
 </suite> <!-- Suite -->

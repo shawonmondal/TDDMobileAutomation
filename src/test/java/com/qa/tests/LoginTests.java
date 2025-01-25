@@ -3,6 +3,7 @@ package com.qa.tests;
 import com.qa.BaseTest;
 import com.qa.pages.LoginPage;
 import com.qa.pages.ProductsPage;
+import com.qa.utils.TestUtils;
 import org.json.JSONObject;
 import org.json.JSONTokener;
 import org.testng.Assert;
@@ -13,14 +14,14 @@ import java.io.InputStream;
 import java.lang.reflect.Method;
 
 public class LoginTests extends BaseTest {
-
+    TestUtils testUtils = new TestUtils();
     LoginPage loginPage;
     ProductsPage productsPage;
-    InputStream dataIS;
-    JSONObject loginUsers;
+    JSONObject loginUsers;     //It can be kept at the class level as we are not really manipulating it, we are just reading test data from JSON file
 
     @BeforeClass
     public void beforeClass() throws IOException {
+        InputStream dataIS = null;
         try {
             String dataFileName = "data/loginUser.json";
             dataIS = getClass().getClassLoader().getResourceAsStream(dataFileName);
@@ -44,18 +45,18 @@ public class LoginTests extends BaseTest {
 
     @AfterClass
     public void afterClass() {
-
     }
 
     @BeforeMethod
     public void beforeMethod(Method method) {
+        testUtils.log().info("++++++++++++++++++ Login-Test-class before method +++++++++++++++++++++");
         loginPage = new LoginPage();
-        System.out.println("\n" + " ********** Starting Test: " + method.getName() + " ************* " + "\n");
-
+        testUtils.log().info("\n" + " ********** Starting Test: " + method.getName() + " ************* " + "\n");
     }
 
     @AfterMethod
     public void afterMethod() {
+        testUtils.log().info("++++++++++++ Login-Test-class after method +++++++++++++++++");
         try {
             closeApp();
             openApp();
@@ -73,9 +74,9 @@ public class LoginTests extends BaseTest {
 //            loginPage.pressLoginButton();
 //
 //            String actualErrorText = loginPage.getErrorText();
-//            System.out.println("Actual Error: "+ actualErrorText);
+//            testUtils.log().info("Actual Error: "+ actualErrorText);
 //            String expectedErrorText = "Username and password do not match any user in this service.";
-//            System.out.println("Expected Error: "+ expectedErrorText);
+//            testUtils.log().info("Expected Error: "+ expectedErrorText);
 //
 //            Assert.assertEquals(actualErrorText, expectedErrorText);
 //
@@ -83,7 +84,7 @@ public class LoginTests extends BaseTest {
 //            StringWriter stringWriter = new StringWriter();
 //            PrintWriter printWriter = new PrintWriter(stringWriter);
 //            e.printStackTrace(printWriter);
-//            System.out.println(stringWriter.toString());
+//            testUtils.log().info(stringWriter.toString());
 //            Assert.fail(stringWriter.toString());
 //        }
 //          //  By using Try Catch Block //
@@ -91,10 +92,10 @@ public class LoginTests extends BaseTest {
         loginPage.enterPassword(loginUsers.getJSONObject("invalidUsername").getString("password"));
         loginPage.pressLoginButton();
 
-        String actualErrorText = loginPage.getErrorText()+"Hello";
-        System.out.println("Actual Error: " + actualErrorText);
-        String expectedErrorText = stringsHM.get("err_invalid_username_or_password");
-        System.out.println("Expected Error: " + expectedErrorText);
+        String actualErrorText = loginPage.getErrorText();
+        testUtils.log().info("Actual Error: " + actualErrorText);
+        String expectedErrorText = getStringsHM().get("err_invalid_username_or_password");
+        testUtils.log().info("Expected Error: " + expectedErrorText);
 
         Assert.assertEquals(actualErrorText, expectedErrorText);
     }
@@ -105,11 +106,11 @@ public class LoginTests extends BaseTest {
         loginPage.enterPassword(loginUsers.getJSONObject("invalidPassword").getString("password"));
         loginPage.pressLoginButton();
 
-        String actualErrorText = loginPage.getErrorText();
-        System.out.println("Actual Error: " + actualErrorText);
+        String actualErrorText = loginPage.getErrorText()+"xxx";
+        testUtils.log().info("Actual Error: " + actualErrorText);
 //        String expectedErrorText = "Username and password do not match any user in this service.";
-        String expectedErrorText = stringsHM.get("err_invalid_username_or_password");
-        System.out.println("Expected Error: " + expectedErrorText);
+        String expectedErrorText = getStringsHM().get("err_invalid_username_or_password");
+        testUtils.log().info("Expected Error: " + expectedErrorText);
 
         Assert.assertEquals(actualErrorText, expectedErrorText);
     }
@@ -122,10 +123,8 @@ public class LoginTests extends BaseTest {
         productsPage = loginPage.pressLoginButton();
 
         String actualHeaderText = productsPage.getProductHeaderTitle();
-        String expectedHeaderText = stringsHM.get("product_title");
-        System.out.println("Expected Product Title: " + expectedHeaderText + "\n" + "Actual Product Title: " + actualHeaderText);
+        String expectedHeaderText = getStringsHM().get("product_title");
+        testUtils.log().info("Expected Product Title: " + expectedHeaderText + "\n" + "Actual Product Title: " + actualHeaderText);
         Assert.assertEquals(actualHeaderText, expectedHeaderText);
     }
-
-
 }
