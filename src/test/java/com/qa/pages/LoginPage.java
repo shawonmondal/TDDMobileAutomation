@@ -1,6 +1,7 @@
 package com.qa.pages;
 
 import com.qa.BaseTest;
+import com.qa.utils.TestUtils;
 import io.appium.java_client.AppiumBy;
 import io.appium.java_client.pagefactory.AndroidFindBy;
 import io.appium.java_client.pagefactory.AppiumFieldDecorator;
@@ -9,6 +10,9 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.PageFactory;
 
 public class LoginPage extends BaseTest {
+
+    TestUtils testUtils = new TestUtils();
+
     @AndroidFindBy(accessibility = "test-Username")
     @iOSXCUITFindBy(id = "test-Username")
     private WebElement usernameTextField;
@@ -32,27 +36,24 @@ public class LoginPage extends BaseTest {
     }
 
     public LoginPage enterUserName(String username) {
-        System.out.println("Login with " + username);
-        enterTextinTextField(usernameTextField, username);
+//        testUtils.log().info("Login with " + username);
+        enterTextinTextField(usernameTextField, username, "Login with " + username);
         return this;
     }
 
     public LoginPage enterPassword(String password) {
-        System.out.println("Password is " + password);
-        enterTextinTextField(passwordTextField, password);
+//        testUtils.log().info("Password is " + password);
+        enterTextinTextField(passwordTextField, password, "Password is " + password);
         return this;
     }
 
     public ProductsPage pressLoginButton() {
-        System.out.println("Press login button");
-        clickOnElement(loginButton);
+        clickOnElement(loginButton, "Press login button");
         return new ProductsPage();
     }
 
     public String getErrorText() {
-//        return getAttributOfElement(invalidUsernamePasswordErrorTxt, "text");
-        String errTXT = getTextOfElement(invalidUsernamePasswordErrorTxt);
-        System.out.println("Error text is: " + errTXT);
+        String errTXT = getTextOfElement(invalidUsernamePasswordErrorTxt, "Error text is: ");
         return errTXT;
     }
 

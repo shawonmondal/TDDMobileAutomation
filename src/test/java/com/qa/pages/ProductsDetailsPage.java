@@ -1,6 +1,7 @@
 package com.qa.pages;
 
 import com.qa.AboveNavMenuBar;
+import com.qa.utils.TestUtils;
 import io.appium.java_client.pagefactory.AndroidFindBy;
 import io.appium.java_client.pagefactory.AppiumFieldDecorator;
 import io.appium.java_client.pagefactory.iOSXCUITFindBy;
@@ -9,7 +10,7 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.PageFactory;
 
 public class ProductsDetailsPage extends AboveNavMenuBar {
-
+    TestUtils testUtils = new TestUtils();
     @AndroidFindBy(xpath = "//android.widget.TextView[@text=\"BACK TO PRODUCTS\"]")
     @iOSXCUITFindBy(xpath = "//android.widget.TextView[@text=\"BACK TO PRODUCTS\"]")
     private WebElement backToProductButton;
@@ -34,7 +35,7 @@ public class ProductsDetailsPage extends AboveNavMenuBar {
 
 
     public ProductsDetailsPage() {
-        PageFactory.initElements(new AppiumFieldDecorator(driver), this);
+        PageFactory.initElements(new AppiumFieldDecorator(getDriver()), this);
     }
 
     public void landedOnProductDetailsPage(){
@@ -45,24 +46,22 @@ public class ProductsDetailsPage extends AboveNavMenuBar {
     }
 
     public String getProductTitleText() {
-        String productTitle = getTextOfElement(productBackpackTitle);
-        System.out.println("Product title is: " + productTitle);
+        String productTitle = getTextOfElement(productBackpackTitle, "Product title is: ");
         return productTitle;
     }
 
     public String getProductDetailsText() {
-        String productDetailstext = getTextOfElement(productBackpackDescribtion);
-        System.out.println("Product description is: " + productDetailstext);
+        String productDetailstext = getTextOfElement(productBackpackDescribtion, "Product description is: ");
+//        testUtils.log().info("Product description is: " + productDetailstext);
         return productDetailstext;
     }
 
     public String scrollToPriceAndValidate(){
-        return getTextOfElement(scrollToElement());
+        return getTextOfElement(scrollToElement(),"Text of element is: ");
     }
 
     public ProductsPage pressBackToProductsButton() {
-        System.out.println("Navigat back to ProductsPage");
-        clickOnElement(backToProductButton);
+        clickOnElement(backToProductButton,"Navigat back to ProductsPage");
         return new ProductsPage();
     }
 
